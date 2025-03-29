@@ -79,7 +79,7 @@ public class SecurityConfig {
         http.exceptionHandling(exceptionHandling -> exceptionHandling
                 .authenticationEntryPoint((request, response, authException) -> {
                     // 로그인되지 않은 사용자는 네이버 로그인 페이지로 이동
-                    response.sendRedirect("/oauth2/authorization/naver");
+                    response.sendRedirect("oauth2/authorization/kakao");
                 })
                 .accessDeniedHandler((request, response, accessDeniedException) -> {
                     // 로그인은 했지만 ADMIN 권한이 없는 경우 403 응답
