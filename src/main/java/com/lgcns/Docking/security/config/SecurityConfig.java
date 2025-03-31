@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -57,8 +58,11 @@ public class SecurityConfig {
         // 경로별 인가 설정
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/").permitAll()
-                .requestMatchers("/news/post", "/admin/users/news/","/api/comment/").authenticated()
-                .requestMatchers("/swagger-ui","/news/**","/api/comment/**","/auth/logout").permitAll()
+                .requestMatchers("/planet/**").authenticated()
+                .requestMatchers("/oauth2/**", "/login/**").permitAll()
+                .requestMatchers("/images/**", "/css/**", "/js/**", "/favicon.ico").permitAll()
+
+
                 .anyRequest().authenticated()
         );
 
@@ -66,8 +70,15 @@ public class SecurityConfig {
         http.formLogin(form -> form.disable());
         http.httpBasic(basic -> basic.disable());
 
+        /*
+        // JWT 필터 추가
+        http.addFilterAfter(new JWTFilter(jwtUtil), OAuth2LoginAuthenticationFilter.class);
+        */
+
+
         // JWT 필터 추가
         http.addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+
 
         // OAuth2 로그인 설정
         http.oauth2Login(oauth2 -> oauth2
@@ -79,7 +90,7 @@ public class SecurityConfig {
         http.exceptionHandling(exceptionHandling -> exceptionHandling
                 .authenticationEntryPoint((request, response, authException) -> {
                     // 로그인되지 않은 사용자는 네이버 로그인 페이지로 이동
-                    response.sendRedirect("oauth2/authorization/kakao");
+                    response.sendRedirect("/oauth2/authorization/kakao");
                 })
                 .accessDeniedHandler((request, response, accessDeniedException) -> {
                     // 로그인은 했지만 ADMIN 권한이 없는 경우 403 응답
