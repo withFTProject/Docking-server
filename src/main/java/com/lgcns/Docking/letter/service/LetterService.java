@@ -71,11 +71,10 @@ public class LetterService {
     }
 
     // 행성 저장 (기존 planet 패키지의 기능)
-    public Letter savePlanetToLetter(Long letterId, String planetUrl) {
+    public Letter savePlanetToLetter(Long letterId) {
         Letter letter = letterRepository.findById(letterId)
                 .orElseThrow(() -> new IllegalArgumentException("편지를 찾을 수 없습니다."));
 
-        letter.setPlanet(planetUrl);
         return letterRepository.save(letter);
     }
 
@@ -83,6 +82,13 @@ public class LetterService {
     @Transactional(readOnly = true)
     public Page<PlanetListResponseDto> getPlanetList(int page, int size) {
         Page<Letter> letters = letterRepository.findAll(PageRequest.of(page, size));
-        return letters.map(letter -> new PlanetListResponseDto(letter.getPlanet()));
+
+        return letters.map(letter -> new PlanetListResponseDto(
+                letter.getId(),
+                letter.getTitle(),
+                letter.getPlanet()
+        ));
     }
+
+
 }

@@ -1,7 +1,6 @@
 package com.lgcns.Docking.planet.controller;
 
 import com.lgcns.Docking.planet.dto.PlanetListResponseDto;
-import com.lgcns.Docking.planet.dto.PlanetRequestDto;
 import com.lgcns.Docking.planet.dto.PlanetResponseDto;
 import com.lgcns.Docking.letter.entity.Letter;
 import com.lgcns.Docking.letter.service.LetterService;
@@ -11,9 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/planet")
@@ -25,13 +22,11 @@ public class PlanetController {
     // 1. 행성 선택 (편지에 행성 이미지 URL 저장)
     @PutMapping("/{letterId}")
     public ResponseEntity<PlanetResponseDto> choosePlanet(
-            @PathVariable Long letterId,
-            @RequestBody PlanetRequestDto request
+            @PathVariable Long letterId
     ) {
-        Letter updated = letterService.savePlanetToLetter(letterId, request.getPlanetUrl());
+        Letter updated = letterService.savePlanetToLetter(letterId);
         return ResponseEntity.ok(new PlanetResponseDto(
                 updated.getId(),
-                updated.getPlanet(),
                 "성공입니다"
         ));
     }

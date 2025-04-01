@@ -7,6 +7,5 @@ import lombok.Getter;
 @Getter
 public class PlanetResponseDto {
     private Long letterId;
-    private String planetUrl;
     private String message;
 }

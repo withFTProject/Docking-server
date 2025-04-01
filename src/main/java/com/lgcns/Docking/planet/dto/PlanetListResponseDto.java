@@ -6,5 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class PlanetListResponseDto {
-    private String planetUrl;
+    private Long id;
+    private String title;
+    private String planet;
 }
