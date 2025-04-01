@@ -1,5 +1,6 @@
 package com.lgcns.Docking.planet.entity;
 
+import com.lgcns.Docking.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,6 +29,7 @@ public class Letter {
     @Column(nullable = false)
     private String sticker;
 
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }

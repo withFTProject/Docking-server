@@ -1,7 +1,10 @@
 package com.lgcns.Docking.security.oauth2;
 
+import com.lgcns.Docking.planet.repository.LetterRepository;
 import com.lgcns.Docking.security.jwt.JWTUtil;
 import com.lgcns.Docking.user.dto.CustomOAuth2User;
+import com.lgcns.Docking.user.entity.User;
+import com.lgcns.Docking.user.repository.UserRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,9 +22,15 @@ import java.util.Iterator;
 public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final JWTUtil jwtUtil;
+    private final LetterRepository letterRepository;
+    private final UserRepository userRepository;
 
-    public CustomSuccessHandler(JWTUtil jwtUtil) {
+
+    public CustomSuccessHandler(JWTUtil jwtUtil, LetterRepository letterRepository, UserRepository userRepository) {
         this.jwtUtil = jwtUtil;
+        this.letterRepository = letterRepository;
+        this.userRepository = userRepository;
+
     }
 
     @Override
@@ -47,8 +56,16 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         System.out.println(token);
 
+        // 유저 조회
+        User user = userRepository.findById(Long.valueOf(id))
+                .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
+
+        boolean hasSubmitted = letterRepository.existsByUser(user);
+
         // 쿠키 방식 전달 + 프론트에 리다이렉트
         response.addCookie(createCookie("Authorization", token));
+        response.addCookie(createCookie("hasSubmittedLetter", String.valueOf(hasSubmitted)));
+
         response.sendRedirect("http://localhost/");
     }
 
