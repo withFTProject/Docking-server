@@ -1,6 +1,5 @@
 package com.lgcns.Docking.security.oauth2;
 
-import com.lgcns.Docking.planet.repository.LetterRepository;
 import com.lgcns.Docking.security.jwt.JWTUtil;
 import com.lgcns.Docking.user.dto.CustomOAuth2User;
 import com.lgcns.Docking.user.entity.User;
@@ -13,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import com.lgcns.Docking.letter.entity.LetterRepository;
 
 import java.io.IOException;
 import java.util.Collection;
