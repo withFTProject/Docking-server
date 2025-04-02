@@ -15,6 +15,9 @@ import org.springframework.stereotype.Component;
 import com.lgcns.Docking.letter.entity.LetterRepository;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -62,11 +65,47 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         boolean hasSubmitted = letterRepository.existsByUser(user);
 
-        // 쿠키 방식 전달 + 프론트에 리다이렉트
-        response.addCookie(createCookie("Authorization", token));
-        response.addCookie(createCookie("hasSubmittedLetter", String.valueOf(hasSubmitted)));
+//        // 쿠키 방식 전달 + 프론트에 리다이렉트
+//        response.addCookie(createCookie("Authorization", token));
+//        response.addCookie(createCookie("hasSubmittedLetter", String.valueOf(hasSubmitted)));
+//
+////        response.sendRedirect("http://localhost:3000/after-login");
+//        // 현재 요청의 스키마(http/https)와 호스트를 가져옵니다
+//        String scheme = request.getHeader("X-Forwarded-Proto") != null ?
+//                request.getHeader("X-Forwarded-Proto") : request.getScheme();
+//        String serverName = request.getServerName();
+//        int serverPort = request.getServerPort();
+//
+//        // 프론트엔드 URL 동적 구성 (개발 환경에 따라 조정 필요)
+//        String frontendUrl;
+//        if (serverName.contains("localhost") || serverName.contains("127.0.0.1")) {
+//            frontendUrl = "http://localhost:3000/after-login";
+//        } else {
+//            // ngrok이나 다른 배포 환경일 경우
+//            frontendUrl = scheme + "://" + serverName + (serverPort != 80 && serverPort != 443 ? ":" + serverPort : "") + "/after-login";
+//        }
+//
+//        // 토큰을 URL 파라미터로 추가
+//        frontendUrl += "?token=" + token + "&hasSubmitted=" + hasSubmitted;
+//
+//        // 리다이렉트
+//        response.sendRedirect(frontendUrl);
 
-        response.sendRedirect("http://localhost:3000/after-login");
+        // ngrok URL로 리다이렉트 - URL 파라미터로만 정보 전달
+        String redirectUrl = "https://3cfa-175-114-229-158.ngrok-free.app/after-login";
+
+        // URL 인코딩 적용
+        try {
+            String encodedToken = URLEncoder.encode(token, StandardCharsets.UTF_8.toString());
+            redirectUrl += "?token=" + encodedToken + "&hasSubmitted=" + hasSubmitted;
+        } catch (UnsupportedEncodingException e) {
+            // 인코딩 실패시 인코딩 없이 진행
+            redirectUrl += "?token=" + token + "&hasSubmitted=" + hasSubmitted;
+        }
+
+        // 쿠키 설정은 제거 (URL 파라미터로만 전달)
+        System.out.println("리다이렉트 URL: " + redirectUrl);
+        response.sendRedirect(redirectUrl);
 
     }
 
