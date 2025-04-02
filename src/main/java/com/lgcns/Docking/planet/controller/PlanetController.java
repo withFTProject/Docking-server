@@ -20,7 +20,7 @@ public class PlanetController {
 
     private final LetterService letterService;
 
-    // 1. 행성 선택 (편지에 행성 이미지 URL 저장)
+    // 1. 행성 선택
     @PutMapping("/{letterId}")
     public ResponseEntity<PlanetResponseDto> choosePlanet(
             @PathVariable Long letterId,
