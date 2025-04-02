@@ -71,9 +71,11 @@ public class LetterService {
     }
 
     // 행성 저장 (기존 planet 패키지의 기능)
-    public Letter savePlanetToLetter(Long letterId) {
+    public Letter savePlanetToLetter(Long letterId, String planetUrl) {
         Letter letter = letterRepository.findById(letterId)
                 .orElseThrow(() -> new IllegalArgumentException("편지를 찾을 수 없습니다."));
+
+        letter.setPlanet(planetUrl);
 
         return letterRepository.save(letter);
     }

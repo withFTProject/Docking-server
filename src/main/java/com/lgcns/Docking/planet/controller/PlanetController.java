@@ -1,6 +1,7 @@
 package com.lgcns.Docking.planet.controller;
 
 import com.lgcns.Docking.planet.dto.PlanetListResponseDto;
+import com.lgcns.Docking.planet.dto.PlanetRequestDto;
 import com.lgcns.Docking.planet.dto.PlanetResponseDto;
 import com.lgcns.Docking.letter.entity.Letter;
 import com.lgcns.Docking.letter.service.LetterService;
@@ -22,9 +23,10 @@ public class PlanetController {
     // 1. 행성 선택 (편지에 행성 이미지 URL 저장)
     @PutMapping("/{letterId}")
     public ResponseEntity<PlanetResponseDto> choosePlanet(
-            @PathVariable Long letterId
+            @PathVariable Long letterId,
+            @RequestBody PlanetRequestDto planetRequestDto
     ) {
-        Letter updated = letterService.savePlanetToLetter(letterId);
+        Letter updated = letterService.savePlanetToLetter(letterId, planetRequestDto.getPlanetUrl());
         return ResponseEntity.ok(new PlanetResponseDto(
                 updated.getId(),
                 "성공입니다"
